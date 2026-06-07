@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Long Wait — Scuderia Ferrari</title>
+<meta name="description" content="Ferrari is Formula 1's only ever-present team and its most successful — yet it has chased a title it once owned for more than a decade. The story of the long wait." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,500&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --rosso: #d40000;
+    --rosso-deep: #8a0000;
+    --rosso-dark: #2a0606;
+    --gold: #e7c873;
+    --ink: #1a1a1a;
+    --paper: #fbf9f6;
+    --paper-2: #f1ece5;
+    --muted: #6b6258;
+    --rule: #d9d0c4;
+    --serif: "Playfair Display", Georgia, "Times New Roman", serif;
+    --sans: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 19px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  /* ---------- Scroll progress bar ---------- */
+  #progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 4px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--rosso), var(--gold));
+    z-index: 1000;
+    transition: width 0.08s linear;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 6vh 24px;
+    color: #fff;
+    position: relative;
+    background:
+      radial-gradient(circle at 50% 18%, rgba(231,200,115,0.18), transparent 55%),
+      linear-gradient(165deg, var(--rosso) 0%, var(--rosso-deep) 60%, var(--rosso-dark) 100%);
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(90deg, rgba(0,0,0,0.05) 0 2px, transparent 2px 4px);
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .badge {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    border: 3px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 32px;
+    background: rgba(0,0,0,0.18);
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.35);
+  }
+  .badge span {
+    font-family: var(--serif);
+    font-weight: 900;
+    font-style: italic;
+    font-size: 42px;
+    color: var(--gold);
+    letter-spacing: -2px;
+    line-height: 1;
+  }
+
+  .kicker {
+    font-family: var(--sans);
+    text-transform: uppercase;
+    letter-spacing: 0.32em;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gold);
+    margin: 0 0 20px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: clamp(3.2rem, 13vw, 8.5rem);
+    line-height: 0.95;
+    margin: 0 0 24px;
+    position: relative;
+    z-index: 2;
+    text-shadow: 0 4px 30px rgba(0,0,0,0.3);
+  }
+
+  .hero .dek {
+    max-width: 620px;
+    font-size: clamp(1.05rem, 2.6vw, 1.4rem);
+    font-weight: 300;
+    line-height: 1.55;
+    color: rgba(255,255,255,0.92);
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .scroll-cue {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    color: var(--gold);
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  .scroll-cue .arrow {
+    display: block;
+    margin: 10px auto 0;
+    width: 22px;
+    height: 22px;
+    border-right: 2px solid var(--gold);
+    border-bottom: 2px solid var(--gold);
+    transform: rotate(45deg);
+    animation: bounce 1.8s infinite;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: rotate(45deg) translate(0,0); opacity: 1; }
+    50% { transform: rotate(45deg) translate(6px,6px); opacity: 0.4; }
+  }
+
+  /* ---------- General layout ---------- */
+  section { position: relative; }
+
+  .prose {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 96px 24px;
+  }
+
+  .section-kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.28em;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--rosso);
+    margin: 0 0 16px;
+  }
+
+  .prose h2 {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1.1;
+    margin: 0 0 28px;
+  }
+
+  .prose p { margin: 0 0 22px; }
+
+  .drop-cap::first-letter {
+    font-family: var(--serif);
+    font-weight: 900;
+    float: left;
+    font-size: 5.2rem;
+    line-height: 0.78;
+    padding: 6px 14px 0 0;
+    color: var(--rosso);
+  }
+
+  .stat-inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    margin: 40px 0 0;
+    padding-top: 32px;
+    border-top: 2px solid var(--rule);
+  }
+  .stat-inline .item { flex: 1 1 120px; }
+  .stat-inline .num {
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: 2.6rem;
+    line-height: 1;
+    color: var(--rosso);
+  }
+  .stat-inline .lab {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+
+  /* ---------- Pullquote ---------- */
+  .pullquote {
+    background: var(--rosso-dark);
+    color: #fff;
+    text-align: center;
+    padding: 120px 24px;
+  }
+  .pullquote blockquote {
+    max-width: 860px;
+    margin: 0 auto;
+    font-family: var(--serif);
+    font-weight: 700;
+    font-style: italic;
+    font-size: clamp(1.7rem, 4.6vw, 3.1rem);
+    line-height: 1.25;
+  }
+  .pullquote .accent { color: var(--gold); }
+  .pullquote cite {
+    display: block;
+    margin-top: 32px;
+    font-family: var(--sans);
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  /* ---------- Scrolly layout (two-column) ---------- */
+  .scrolly {
+    position: relative;
+    display: grid;
+    grid-template-columns: 45% 55%;
+  }
+  .scrolly .steps { padding: 10vh 0; }
+  .scrolly .step {
+    min-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 48px;
+    opacity: 0.28;
+    transition: opacity 0.5s ease;
+  }
+  .scrolly .step.active { opacity: 1; }
+  .scrolly .step h3 {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: clamp(1.5rem, 3.4vw, 2.3rem);
+    line-height: 1.12;
+    margin: 0 0 16px;
+  }
+  .scrolly .step .yr {
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: 1rem;
+    color: var(--rosso);
+    letter-spacing: 0.05em;
+    margin: 0 0 10px;
+  }
+  .scrolly .step p { margin: 0; font-size: 1.05rem; }
+
+  .scrolly .sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--paper-2);
+    border-left: 1px solid var(--rule);
+    overflow: hidden;
+  }
+  .viz {
+    width: 100%;
+    max-width: 560px;
+    padding: 40px;
+  }
+
+  /* ---------- Timeline viz (scrolly 1) ---------- */
+  .timeline {
+    position: relative;
+    width: 100%;
+  }
+  .tl-track {
+    position: relative;
+    height: 6px;
+    background: var(--rule);
+    border-radius: 3px;
+    margin: 60px 0;
+  }
+  .tl-fill {
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--rosso), var(--gold));
+    border-radius: 3px;
+    transition: width 0.9s cubic-bezier(.6,.02,.2,1);
+  }
+  .tl-node {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.6);
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    border: 3px solid var(--rule);
+    opacity: 0.4;
+    transition: all 0.6s ease;
+  }
+  .tl-node.lit {
+    border-color: var(--rosso);
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    box-shadow: 0 0 0 6px rgba(212,0,0,0.12);
+  }
+  .tl-node.gold.lit {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 6px rgba(231,200,115,0.22);
+  }
+  .tl-node .tl-label {
+    position: absolute;
+    top: 26px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 14px;
+    white-space: nowrap;
+    color: var(--muted);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+  .tl-node.lit .tl-label { opacity: 1; color: var(--ink); }
+  .tl-headline {
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: clamp(2rem, 6vw, 3.4rem);
+    text-align: center;
+    color: var(--rosso);
+    line-height: 1;
+    min-height: 1.1em;
+    transition: opacity 0.4s ease;
+  }
+  .tl-sub {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-top: 12px;
+    min-height: 1.4em;
+  }
+
+  /* ---------- Bar chart (scrolly 2) ---------- */
+  .barchart { width: 100%; }
+  .barchart .bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+    height: 320px;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 0;
+  }
+  .barchart .bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    height: 100%;
+  }
+  .barchart .bar {
+    width: 100%;
+    background: var(--rosso);
+    height: 0;
+    border-radius: 4px 4px 0 0;
+    transition: height 1s cubic-bezier(.4,0,.2,1);
+    position: relative;
+  }
+  .barchart .bar.gold { background: var(--gold); }
+  .barchart .bar .v {
+    position: absolute;
+    top: -26px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 15px;
+    opacity: 0;
+    transition: opacity 0.5s ease 0.6s;
+  }
+  .barchart.in .bar .v { opacity: 1; }
+  .barchart .x {
+    display: flex;
+    gap: 14px;
+    margin-top: 10px;
+  }
+  .barchart .x span {
+    flex: 1;
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .barchart .cap {
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 24px;
+    font-style: italic;
+  }
+
+  /* ---------- One-point margin (scrolly 3) ---------- */
+  .margin-viz { width: 100%; text-align: center; }
+  .margin-viz .row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .margin-viz .row .name {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-align: left;
+  }
+  .margin-viz .row .name small {
+    display: block;
+    font-weight: 400;
+    color: var(--muted);
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+  }
+  .margin-viz .row .pts {
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: 2.8rem;
+    line-height: 1;
+  }
+  .margin-viz .row.win .name,
+  .margin-viz .row.win .pts { color: var(--rosso); }
+  .margin-viz .gap {
+    margin-top: 28px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.3rem;
+    color: var(--ink);
+  }
+  .margin-viz .gap b { color: var(--rosso); font-size: 2rem; font-style: normal; }
+
+  /* ---------- Drought counter (scrolly 4) ---------- */
+  .drought-viz { text-align: center; width: 100%; }
+  .drought-viz .big {
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: clamp(7rem, 22vw, 14rem);
+    line-height: 0.85;
+    color: var(--rosso);
+    letter-spacing: -4px;
+  }
+  .drought-viz .unit {
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+  .drought-viz .since {
+    margin-top: 20px;
+    font-style: italic;
+    color: var(--muted);
+  }
+
+  /* ---------- Stat strip ---------- */
+  .stat-strip {
+    background: linear-gradient(165deg, var(--rosso) 0%, var(--rosso-deep) 100%);
+    color: #fff;
+    padding: 100px 24px;
+  }
+  .stat-strip .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+    text-align: center;
+  }
+  .stat-strip .num {
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    line-height: 0.9;
+    color: var(--gold);
+  }
+  .stat-strip .lab {
+    margin-top: 14px;
+    font-size: 14px;
+    line-height: 1.4;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.9);
+  }
+
+  /* ---------- Closing ---------- */
+  .closing {
+    text-align: center;
+    padding: 120px 24px;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  .closing .section-kicker { text-align: center; }
+  .closing h2 {
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: clamp(2.2rem, 6vw, 4rem);
+    line-height: 1.05;
+    margin: 0 0 28px;
+  }
+  .closing p { font-size: 1.15rem; }
+  .lineup {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin: 48px 0;
+    flex-wrap: wrap;
+  }
+  .driver {
+    flex: 0 0 200px;
+    padding: 28px 20px;
+    border: 1px solid var(--rule);
+    border-top: 4px solid var(--rosso);
+    background: #fff;
+  }
+  .driver .num {
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: 2.4rem;
+    color: var(--rosso);
+    line-height: 1;
+  }
+  .driver .nm {
+    font-weight: 700;
+    font-size: 1.15rem;
+    margin-top: 10px;
+  }
+  .driver .meta {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* ---------- Footer ---------- */
+  footer {
+    background: var(--ink);
+    color: rgba(255,255,255,0.7);
+    padding: 60px 24px;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  footer .wrap { max-width: 760px; margin: 0 auto; }
+  footer strong { color: var(--gold); font-weight: 600; }
+  footer .sf {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 900;
+    color: var(--gold);
+    font-size: 18px;
+    letter-spacing: -1px;
+  }
+
+  /* ---------- Mobile: collapse scrolly to single column ---------- */
+  @media (max-width: 820px) {
+    body { font-size: 17px; }
+    .scrolly { grid-template-columns: 1fr; }
+    .scrolly .steps { padding: 0; order: 2; }
+    .scrolly .step {
+      min-height: auto;
+      padding: 48px 24px;
+      opacity: 1;
+    }
+    .scrolly .sticky {
+      position: sticky;
+      top: 0;
+      height: 70vh;
+      order: 1;
+      border-left: none;
+      border-bottom: 1px solid var(--rule);
+    }
+    .viz { padding: 20px; }
+    .stat-strip .wrap { grid-template-columns: repeat(2, 1fr); gap: 36px; }
+    .prose { padding: 64px 24px; }
+  }
+
+  @media (max-width: 480px) {
+    .stat-strip .wrap { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- Reduced motion ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+    .scrolly .step { opacity: 1; }
+    .scroll-cue .arrow { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress" aria-hidden="true"></div>
+
+<!-- 1. HERO -->
+<header class="hero">
+  <div class="badge" aria-hidden="true"><span>SF</span></div>
+  <p class="kicker">Scuderia Ferrari · 1950 — Present</p>
+  <h1>The Long Wait</h1>
+  <p class="dek">
+    Formula 1's only ever-present team. Its most successful, by almost every
+    measure ever kept. And yet, for more than a decade and a half, Ferrari has
+    been chasing a drivers' title it once seemed to own outright.
+  </p>
+  <div class="scroll-cue">
+    Scroll
+    <span class="arrow" aria-hidden="true"></span>
+  </div>
+</header>
+
+<!-- 2. INTRO PROSE -->
+<section class="prose">
+  <p class="section-kicker">The Only Constant</p>
+  <h2>Every grid since the beginning has had a Ferrari on it.</h2>
+  <p class="drop-cap">
+    Formula 1 began in 1950, and Ferrari was there. Marques have come and gone
+    by the dozen since — great names and one-season hopefuls alike — but through
+    seventy-five seasons of rule changes, eras and upheavals, one scarlet
+    constant has never missed a championship. No other team can say it.
+  </p>
+  <p>
+    It is not merely longevity. By the records that matter most, Ferrari sits
+    atop the sport: more constructors' championships than anyone, more drivers'
+    titles than any other team has delivered, and a tally of race wins and pole
+    positions no rival has approached. The Prancing Horse is, statistically, the
+    most successful team in the history of grand prix racing.
+  </p>
+  <p>
+    Which makes the silence of recent years so loud. The team that wrote the
+    record book has spent the modern era waiting — and the wait is the story.
+  </p>
+
+  <div class="stat-inline">
+    <div class="item"><div class="num" data-count="16">0</div><div class="lab">Constructors' titles</div></div>
+    <div class="item"><div class="num" data-count="15">0</div><div class="lab">Drivers' titles</div></div>
+    <div class="item"><div class="num" data-count="75">0</div><div class="lab">Seasons entered</div></div>
+  </div>
+</section>
+
+<!-- 3. SCROLLY 1: TIMELINE -->
+<section class="scrolly" id="scrolly-timeline">
+  <div class="sticky">
+    <div class="viz">
+      <div class="timeline">
+        <div class="tl-headline" id="tl-headline">1950</div>
+        <div class="tl-sub" id="tl-sub">A scarlet car on the very first grid.</div>
+        <div class="tl-track">
+          <div class="tl-fill" id="tl-fill"></div>
+          <div class="tl-node" data-pos="2" style="left:2%"><span class="tl-label">1950</span></div>
+          <div class="tl-node gold" data-pos="68" style="left:68%"><span class="tl-label">2000–04</span></div>
+          <div class="tl-node" data-pos="78" style="left:78%"><span class="tl-label">2007–08</span></div>
+          <div class="tl-node" data-pos="100" style="left:100%"><span class="tl-label">Today</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="steps">
+    <div class="step" data-step="0" data-fill="2" data-lit="0" data-headline="1950" data-sub="A scarlet car on the very first grid.">
+      <p class="yr">1950</p>
+      <h3>The beginning, and a beginning that never ended.</h3>
+      <p>When the World Championship was first contested in 1950, Ferrari entered. It has never stopped — the only team to appear, unbroken, in every season since.</p>
+    </div>
+    <div class="step" data-step="1" data-fill="68" data-lit="1" data-headline="2000–2004" data-sub="Five drivers' titles in a row. Total command.">
+      <p class="yr">2000 — 2004</p>
+      <h3>The golden age: five straight drivers' crowns.</h3>
+      <p>With Michael Schumacher leading a relentless team, Ferrari won five consecutive drivers' championships and dominated the constructors' standings. For a while, the record book simply belonged to Maranello.</p>
+    </div>
+    <div class="step" data-step="2" data-fill="78" data-lit="2" data-headline="2007 · 2008" data-sub="The last drivers' title. The last constructors' title.">
+      <p class="yr">2007 — 2008</p>
+      <h3>The last titles — closer than anyone remembers.</h3>
+      <p>Kimi Räikkönen took the 2007 drivers' championship by a single point. In 2008, Ferrari claimed the constructors' title. No one knew these would be the last for a very long time.</p>
+    </div>
+    <div class="step" data-step="3" data-fill="100" data-lit="3" data-headline="The Gap" data-sub="Year after year, the wait kept growing.">
+      <p class="yr">2009 — today</p>
+      <h3>And then, the gap.</h3>
+      <p>The seasons kept coming. The titles did not. What began as a lull hardened into the longest championship drought of Ferrari's modern history — the long wait that defines the team today.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 4. PULLQUOTE -->
+<section class="pullquote">
+  <blockquote>
+    The most successful team in Formula 1 has spent the modern era
+    <span class="accent">waiting for a title it used to win in its sleep.</span>
+  </blockquote>
+  <cite>The Long Wait</cite>
+</section>
+
+<!-- 5. SCROLLY 2: BAR CHART -->
+<section class="scrolly" id="scrolly-bars">
+  <div class="sticky">
+    <div class="viz">
+      <div class="barchart" id="barchart">
+        <div class="bars">
+          <div class="bar-col"><div class="bar" data-v="6"  style="--h:40%"><span class="v">6</span></div></div>
+          <div class="bar-col"><div class="bar" data-v="10" style="--h:67%"><span class="v">10</span></div></div>
+          <div class="bar-col"><div class="bar" data-v="9"  style="--h:60%"><span class="v">9</span></div></div>
+          <div class="bar-col"><div class="bar gold" data-v="15" style="--h:100%"><span class="v">15</span></div></div>
+          <div class="bar-col"><div class="bar" data-v="8"  style="--h:53%"><span class="v">8</span></div></div>
+          <div class="bar-col"><div class="bar gold" data-v="15" style="--h:100%"><span class="v">15</span></div></div>
+        </div>
+        <div class="x">
+          <span>'99</span><span>'00</span><span>'01</span><span>'02</span><span>'03</span><span>'04</span>
+        </div>
+        <p class="cap">Ferrari race wins per season. Gold marks the record-setting campaigns of 2002 &amp; 2004.</p>
+      </div>
+    </div>
+  </div>
+  <div class="steps">
+    <div class="step" data-bars="show">
+      <p class="yr">1999 — 2004</p>
+      <h3>What total dominance actually looked like.</h3>
+      <p>This is the shape of an empire. Through the Schumacher years, Ferrari didn't just win championships — it won races by the bucketload, season after season.</p>
+    </div>
+    <div class="step">
+      <p class="yr">2002 &amp; 2004</p>
+      <h3>Fifteen wins in a single season — twice.</h3>
+      <p>In both 2002 and 2004, Ferrari won fifteen grands prix in one year, two of the most commanding campaigns the sport has ever seen. The drivers' title was effectively decided before the calendar ran out.</p>
+    </div>
+    <div class="step">
+      <p class="yr">The benchmark</p>
+      <h3>A high-water mark that still casts a shadow.</h3>
+      <p>Every season since has been measured, fairly or not, against these numbers. They are the reason the wait feels so long: Ferrari has been here before, at the very top, and remembers exactly how it felt.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 6. SCROLLY 3: ONE-POINT MARGIN -->
+<section class="scrolly" id="scrolly-margin">
+  <div class="sticky">
+    <div class="viz">
+      <div class="margin-viz" id="margin-viz">
+        <div class="row win">
+          <div class="name">Kimi Räikkönen <small>Ferrari</small></div>
+          <div class="pts" data-count="110">0</div>
+        </div>
+        <div class="row">
+          <div class="name">Lewis Hamilton <small>McLaren</small></div>
+          <div class="pts" data-count="109">0</div>
+        </div>
+        <div class="row">
+          <div class="name">Fernando Alonso <small>McLaren</small></div>
+          <div class="pts" data-count="109">0</div>
+        </div>
+        <p class="gap">Decided by <b>1</b> point.</p>
+      </div>
+    </div>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <p class="yr">2007</p>
+      <h3>The last drivers' title came down to a single point.</h3>
+      <p>Heading into the final race of 2007, Räikkönen was the outsider. He won the season finale — and the championship — finishing on 110 points to the 109 of both McLaren drivers.</p>
+    </div>
+    <div class="step">
+      <p class="yr">One point</p>
+      <h3>The thinnest possible margin.</h3>
+      <p>One point separated triumph from heartbreak. It remains Ferrari's most recent drivers' championship — and a reminder of how fine the line at the very top can be.</p>
+    </div>
+    <div class="step">
+      <p class="yr">2008</p>
+      <h3>One more, then the door closed.</h3>
+      <p>Ferrari followed up with the constructors' title in 2008. After that, the championship column went quiet — and the counting of years began.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 7. SCROLLY 4: DROUGHT COUNTER -->
+<section class="scrolly" id="scrolly-drought">
+  <div class="sticky">
+    <div class="viz">
+      <div class="drought-viz">
+        <div class="big" id="drought-num">0</div>
+        <div class="unit">Years and counting</div>
+        <div class="since" id="drought-since">since Ferrari's last drivers' championship</div>
+      </div>
+    </div>
+  </div>
+  <div class="steps">
+    <div class="step" data-drought="go">
+      <p class="yr">2008 — today</p>
+      <h3>Then the years began to add up.</h3>
+      <p>Since that 2007 drivers' crown, the count has only grown. For a team that once won five titles in a row, every season without one has weighed a little heavier than the last.</p>
+    </div>
+    <div class="step">
+      <p class="yr">2010 &amp; 2012</p>
+      <h3>So close, with Alonso.</h3>
+      <p>Fernando Alonso carried Ferrari to the brink twice — losing the championship at the final round in both 2010 and 2012, each time by a handful of points. Maranello has rarely been closer.</p>
+    </div>
+    <div class="step">
+      <p class="yr">2017 &amp; 2018</p>
+      <h3>And again, with Vettel.</h3>
+      <p>Sebastian Vettel led the standings deep into both the 2017 and 2018 seasons before the title slipped away. Strong starts, familiar endings — the pattern of the long wait.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 8. STAT STRIP -->
+<section class="stat-strip">
+  <div class="wrap">
+    <div class="item"><div class="num" data-count="16">0</div><div class="lab">Constructors'<br>championships</div></div>
+    <div class="item"><div class="num" data-count="15">0</div><div class="lab">Drivers'<br>championships</div></div>
+    <div class="item"><div class="num" data-count="75">0</div><div class="lab">Seasons<br>entered</div></div>
+    <div class="item"><div class="num" data-count="1">0</div><div class="lab">Only ever-present<br>team in F1</div></div>
+  </div>
+</section>
+
+<!-- 9. CLOSING -->
+<section class="closing">
+  <p class="section-kicker">The Year the Wait Ends?</p>
+  <h2>A seven-time champion and a homegrown hope.</h2>
+  <p>
+    Ferrari now fields one of the most talked-about line-ups in its history:
+    Lewis Hamilton, a seven-time world champion, alongside Charles Leclerc, the
+    Monégasque the team has built its future around. Between them they carry
+    enormous expectation — and the weight of every year on the counter.
+  </p>
+  <div class="lineup">
+    <div class="driver">
+      <div class="num">7×</div>
+      <div class="nm">Lewis Hamilton</div>
+      <div class="meta">World champion</div>
+    </div>
+    <div class="driver">
+      <div class="num">SF</div>
+      <div class="nm">Charles Leclerc</div>
+      <div class="meta">The homegrown hope</div>
+    </div>
+  </div>
+  <p>
+    The question that hangs over Maranello is the simplest one in the sport, and
+    the hardest to answer. After everything the record book remembers — and
+    everything it has been waiting for — will this be the year the long wait
+    finally ends?
+  </p>
+</section>
+
+<!-- 10. FOOTER -->
+<footer>
+  <div class="wrap">
+    <p>
+      <span class="sf">SF</span> &nbsp; <strong>The Long Wait</strong> — a data story about Scuderia Ferrari.
+    </p>
+    <p>
+      Figures are anchored to Ferrari's last <strong>confirmed</strong> championships —
+      the Drivers' title of 2007 (Kimi Räikkönen, won by a single point) and the
+      Constructors' title of 2008 — together with the team's all-time records:
+      most constructors' championships, most drivers' championships delivered by
+      any team, and status as Formula 1's only ever-present entrant since 1950.
+      The "years and counting" figure is computed live from the current date, so
+      it never goes stale. This page makes no claim about the outcome of any
+      season after 2008.
+    </p>
+    <p>
+      The Prancing Horse crest is a trademark of Ferrari S.p.A.; the stylized
+      "SF" badge used here is an original placeholder and not the official logo.
+      This is an independent editorial project and is not affiliated with or
+      endorsed by Ferrari.
+    </p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var reduceMotion = window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- Scroll progress bar ---------- */
+  var progress = document.getElementById("progress");
+  function updateProgress() {
+    var h = document.documentElement;
+    var scrolled = h.scrollTop;
+    var max = h.scrollHeight - h.clientHeight;
+    var pct = max > 0 ? (scrolled / max) * 100 : 0;
+    progress.style.width = pct + "%";
+  }
+  window.addEventListener("scroll", updateProgress, { passive: true });
+  window.addEventListener("resize", updateProgress);
+  updateProgress();
+
+  /* ---------- Count-up helper ---------- */
+  function countUp(el, target, duration) {
+    if (reduceMotion) { el.textContent = target; return; }
+    var start = 0;
+    var startTime = null;
+    duration = duration || 1100;
+    function tick(now) {
+      if (startTime === null) startTime = now;
+      var p = Math.min((now - startTime) / duration, 1);
+      // easeOutCubic
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(start + (target - start) * eased);
+      if (p < 1) requestAnimationFrame(tick);
+      else el.textContent = target;
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function runCountsIn(root) {
+    var nums = root.querySelectorAll("[data-count]");
+    nums.forEach(function (el) {
+      if (el.dataset.done) return;
+      el.dataset.done = "1";
+      countUp(el, parseInt(el.dataset.count, 10));
+    });
+  }
+
+  /* ---------- Generic "animate once when visible" ---------- */
+  function onVisible(el, cb, threshold) {
+    if (!("IntersectionObserver" in window)) { cb(); return; }
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          cb();
+          obs.disconnect();
+        }
+      });
+    }, { threshold: threshold || 0.4 });
+    obs.observe(el);
+  }
+
+  /* ---------- Inline + strip count-ups ---------- */
+  document.querySelectorAll(".stat-inline, .stat-strip, #margin-viz").forEach(function (block) {
+    onVisible(block, function () { runCountsIn(block); }, 0.35);
+  });
+
+  /* ---------- Timeline scrolly ---------- */
+  var tlFill = document.getElementById("tl-fill");
+  var tlHeadline = document.getElementById("tl-headline");
+  var tlSub = document.getElementById("tl-sub");
+  var tlNodes = document.querySelectorAll("#scrolly-timeline .tl-node");
+  var tlSteps = document.querySelectorAll("#scrolly-timeline .step");
+
+  function setTimeline(step) {
+    var fill = parseInt(step.dataset.fill, 10);
+    var lit = parseInt(step.dataset.lit, 10);
+    tlFill.style.width = fill + "%";
+    tlHeadline.textContent = step.dataset.headline;
+    tlSub.textContent = step.dataset.sub;
+    tlNodes.forEach(function (n, i) {
+      if (i <= lit) n.classList.add("lit");
+      else n.classList.remove("lit");
+    });
+  }
+
+  /* ---------- Step activation via IntersectionObserver ---------- */
+  function makeStepObserver(steps, onActive) {
+    if (!("IntersectionObserver" in window)) {
+      // Fallback: activate all
+      steps.forEach(function (s) { s.classList.add("active"); });
+      if (steps.length) onActive(steps[steps.length === 1 ? 0 : 0]);
+      return;
+    }
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          steps.forEach(function (s) { s.classList.remove("active"); });
+          e.target.classList.add("active");
+          onActive(e.target);
+        }
+      });
+    }, { rootMargin: "-45% 0px -45% 0px", threshold: 0 });
+    steps.forEach(function (s) { obs.observe(s); });
+  }
+
+  if (tlSteps.length) {
+    setTimeline(tlSteps[0]);
+    tlSteps[0].classList.add("active");
+    makeStepObserver(tlSteps, function (step) { setTimeline(step); });
+  }
+
+  /* ---------- Bar chart ---------- */
+  var barchart = document.getElementById("barchart");
+  if (barchart) {
+    var bars = barchart.querySelectorAll(".bar");
+    onVisible(barchart, function () {
+      barchart.classList.add("in");
+      bars.forEach(function (b) {
+        // Grow each bar to its target height (set inline as the --h custom property).
+        b.style.height = b.style.getPropertyValue("--h");
+      });
+    }, 0.35);
+    // activate bar steps for opacity
+    makeStepObserver(barchart.closest(".scrolly").querySelectorAll(".step"), function () {});
+  }
+
+  /* ---------- Margin scrolly steps ---------- */
+  var marginScrolly = document.getElementById("scrolly-margin");
+  if (marginScrolly) {
+    makeStepObserver(marginScrolly.querySelectorAll(".step"), function () {});
+  }
+
+  /* ---------- Drought counter (dynamic) ---------- */
+  var droughtNum = document.getElementById("drought-num");
+  var droughtSince = document.getElementById("drought-since");
+  var droughtScrolly = document.getElementById("scrolly-drought");
+  if (droughtNum) {
+    var currentYear = new Date().getFullYear();
+    var LAST_DRIVERS_TITLE = 2007; // Räikkönen
+    var years = currentYear - LAST_DRIVERS_TITLE;
+    if (years < 0) years = 0;
+    droughtSince.textContent =
+      "since Ferrari's last drivers' championship in " + LAST_DRIVERS_TITLE +
+      " — and " + (currentYear - 2008) + " since its last constructors' title.";
+    onVisible(droughtNum, function () {
+      countUp(droughtNum, years, 1400);
+    }, 0.4);
+  }
+  if (droughtScrolly) {
+    makeStepObserver(droughtScrolly.querySelectorAll(".step"), function () {});
+  }
+})();
+</script>
+</body>
+</html>
