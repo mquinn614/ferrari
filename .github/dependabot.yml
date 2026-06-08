@@ -1,0 +1,8 @@
+version: 2
+updates:
+  # Keep the GitHub Actions used in workflows (checkout, setup-python, ...)
+  # current so they don't age out and break the pipeline years from now.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
