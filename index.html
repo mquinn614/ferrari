@@ -110,25 +110,44 @@
   /* start-light gantry */
   .gantry {
     position: relative; z-index: 3;
-    display: inline-flex; gap: 10px;
-    padding: 12px 16px; margin-bottom: 30px;
-    background: #050506;
-    border: 1px solid #2a2a2e;
-    border-radius: 10px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+    display: inline-flex; gap: 12px;
+    padding: 14px 18px; margin-bottom: 30px;
+    background: linear-gradient(#1a1a21, #0a0a0d 58%, #050506);
+    border: 1px solid #3a3a42;
+    border-radius: 13px;
+    box-shadow: 0 14px 50px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.09), inset 0 -2px 7px rgba(0,0,0,0.65);
   }
-  .gantry .col { display: flex; flex-direction: column; gap: 6px; }
+  .gantry .col { display: flex; flex-direction: column; gap: 7px; }
   .gantry .bulb {
-    width: 20px; height: 20px; border-radius: 50%;
-    background: #1c1c20; border: 1px solid #000;
-    box-shadow: inset 0 1px 2px rgba(255,255,255,0.06);
+    position: relative;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: radial-gradient(circle at 38% 32%, #27272e, #131318 70%, #0a0a0d);
+    border: 1px solid #000;
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.09), inset 0 -2px 4px rgba(0,0,0,0.65);
     transition: background 0.12s, box-shadow 0.12s;
   }
-  .gantry .bulb.on {
-    background: radial-gradient(circle at 40% 35%, #ff6b6b, var(--rosso) 60%, #6a0000);
-    box-shadow: 0 0 12px 2px rgba(255,40,40,0.7);
+  .gantry .bulb::after {
+    content: ""; position: absolute; top: 17%; left: 23%;
+    width: 36%; height: 27%; border-radius: 50%;
+    background: linear-gradient(rgba(255,255,255,0.55), rgba(255,255,255,0));
+    opacity: 0.32; pointer-events: none;
   }
-  .gantry.go .bulb { background: #0c1a0c; box-shadow: none; }
+  .gantry .bulb.on {
+    background: radial-gradient(circle at 40% 33%, #fff1f0 5%, #ff6b6b 27%, var(--rosso) 62%, #6a0000);
+    box-shadow: 0 0 16px 3px rgba(255,40,40,0.78), 0 0 36px 9px rgba(255,30,30,0.36), inset 0 0 6px rgba(255,205,205,0.55);
+  }
+  .gantry .bulb.on::after { opacity: 0.72; }
+  .gantry.go .bulb {
+    background: radial-gradient(circle at 38% 32%, #0f1a0f, #07120a 70%, #050a06);
+    box-shadow: inset 0 -2px 4px rgba(0,0,0,0.6);
+  }
+  .gantry.go .bulb::after { opacity: 0.1; }
+
+  .copyright {
+    text-align: center; margin-top: 26px;
+    font-family: var(--mono); font-size: 12px;
+    letter-spacing: 0.2em; color: var(--gold); opacity: 0.85;
+  }
 
   .badge {
     width: 86px; height: 86px; border-radius: 50%;
@@ -875,6 +894,7 @@
       depiction of any specific Ferrari model. Independent, non-commercial editorial project, not
       affiliated with or endorsed by Ferrari or Formula 1.
     </p>
+    <p class="copyright">© 2026 MQ</p>
   </div>
 </footer>
 
