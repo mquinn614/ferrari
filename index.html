@@ -58,7 +58,11 @@
     background-image:
       repeating-linear-gradient(45deg, rgba(255,255,255,0.022) 0 1px, transparent 1px 5px),
       repeating-linear-gradient(-45deg, rgba(255,255,255,0.022) 0 1px, transparent 1px 5px),
-      radial-gradient(circle at 50% 0%, rgba(212,0,0,0.10), transparent 60%);
+      radial-gradient(circle at 50% 0%, rgba(212,0,0,0.10), transparent 60%),
+      url(assets/carbon-tile.webp);
+    background-size: auto, auto, auto, 200px 200px;
+    background-repeat: repeat, repeat, no-repeat, repeat;
+    background-blend-mode: normal, normal, normal, multiply;
     color: #fff;
   }
 
@@ -85,6 +89,7 @@
     pointer-events: none;
   }
   #progress-car svg { display: block; }
+  #progress-car img { display: block; width: 46px; height: auto; }
 
   /* ---------- HERO ---------- */
   .hero {
@@ -137,6 +142,7 @@
     font-family: var(--serif); font-weight: 900; font-style: italic;
     font-size: 38px; color: var(--gold); letter-spacing: -2px; line-height: 1;
   }
+  .badge .badge-emblem { width: 82px; height: 82px; object-fit: contain; display: block; }
 
   .kicker {
     position: relative; z-index: 3;
@@ -474,7 +480,9 @@
 
 <div id="progress" aria-hidden="true"></div>
 <div id="progress-car" aria-hidden="true">
-  <svg width="34" height="16" viewBox="0 0 34 16">
+  <img src="assets/progress-car.png" alt="" width="46"
+       onerror="this.style.display='none';var s=this.nextElementSibling;if(s)s.style.display='block';">
+  <svg width="34" height="16" viewBox="0 0 34 16" style="display:none">
     <rect x="3" y="11" width="8" height="4" rx="1.5" fill="#111"/>
     <rect x="23" y="11" width="8" height="4" rx="1.5" fill="#111"/>
     <path d="M2 10 L7 6 L20 5 L31 8 L33 10 L33 11 L2 11 Z" fill="#d40000"/>
@@ -495,7 +503,11 @@
     <div class="col"><span class="bulb"></span><span class="bulb"></span></div>
   </div>
 
-  <div class="badge"><span>SF</span></div>
+  <div class="badge">
+    <img src="assets/crest.png" alt="Scuderia crest" class="badge-emblem"
+         onerror="this.style.display='none';var s=this.nextElementSibling;if(s)s.style.display='';">
+    <span style="display:none">SF</span>
+  </div>
   <p class="kicker">Scuderia Ferrari · 1950 to Present</p>
   <h1>The <span class="accent">Long</span> Wait</h1>
   <p class="dek">
@@ -854,8 +866,9 @@
     <p class="src">
       Historical data: Ergast Developer API / Jolpica-F1 community database (race results 1950–2024).
       Win, podium and points totals computed directly from race-result records; championship years from the
-      established F1 record. The Prancing Horse crest is a trademark of Ferrari S.p.A.; the stylised "SF"
-      badge here is an original placeholder, not the official logo. Independent editorial project, not
+      established F1 record. The Prancing Horse crest is a trademark of Ferrari S.p.A.; the gold laurel
+      emblem here is an original, invented placeholder, not the official logo. The car artwork is
+      AI-generated and is not a depiction of any specific Ferrari model. Independent editorial project, not
       affiliated with or endorsed by Ferrari or Formula 1.
     </p>
   </div>
@@ -973,7 +986,7 @@
       cornersG.appendChild(c);
     });
     // car
-    carG.innerHTML = '<g id="ccarInner">' +
+    var ccarVector = '<g id="ccarInner">' +
       '<rect x="-3.5" y="-9" width="7" height="18" rx="2.5" fill="#d40000"/>' +
       '<path d="M-2 -9 L0 -15 L2 -9 Z" fill="#d40000"/>' +
       '<rect x="-7" y="-9" width="3.5" height="6" rx="1" fill="#111"/>' +
@@ -982,6 +995,15 @@
       '<rect x="3.5" y="4" width="3.5" height="7" rx="1" fill="#111"/>' +
       '<rect x="-6" y="9" width="12" height="2.6" rx="1" fill="#e7c873"/>' +
       '<circle cx="0" cy="0" r="2.4" fill="#e7c873"/></g>';
+    // Flat vector first (guaranteed), then upgrade to the high-res Ludo top-down
+    // render once it loads. Image is centered on the group origin and points up,
+    // so place()'s translate+rotate keeps steering it along the track.
+    carG.innerHTML = ccarVector;
+    var ccarImg = new Image();
+    ccarImg.onload = function () {
+      carG.innerHTML = '<image href="assets/circuit-car.png" x="-7.5" y="-16" width="15" height="32" />';
+    };
+    ccarImg.src = "assets/circuit-car.png";
     var corners = cornersG.querySelectorAll(".corner");
     var cur = { f: fracs[0] }, raf = null;
 
