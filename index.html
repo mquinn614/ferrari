@@ -166,6 +166,7 @@
   .hero-car.in { transform: translateX(0); opacity: 1;
     transition: transform 1.1s cubic-bezier(.16,.7,.3,1), opacity 0.6s ease; }
   .hero-car svg { display: block; width: 100%; height: auto; }
+  .hero-car img { display: block; width: 100%; height: auto; }
 
   .scroll-cue {
     position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%);
@@ -503,7 +504,9 @@
   </p>
 
   <div class="hero-car" id="heroCar">
-    <svg viewBox="0 0 460 140" role="img" aria-label="Stylised Formula 1 car">
+    <img src="assets/hero-car.png" alt="Scuderia Ferrari-style Formula 1 car"
+         onerror="this.style.display='none'; var s=this.nextElementSibling; if (s) s.style.display='block';">
+    <svg viewBox="0 0 460 140" role="img" aria-label="Stylised Formula 1 car" style="display:none">
       <defs>
         <linearGradient id="carRed" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stop-color="#ff2a2a"/><stop offset="1" stop-color="#9c0000"/>
