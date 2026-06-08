@@ -143,6 +143,8 @@
     font-size: 38px; color: var(--gold); letter-spacing: -2px; line-height: 1;
   }
   .badge .badge-emblem { width: 82px; height: 82px; object-fit: contain; display: block; }
+  .badge.has-logo { width: auto; height: auto; border: 0; background: none; box-shadow: none; border-radius: 0; }
+  .badge .badge-official { width: auto; height: 98px; object-fit: contain; filter: drop-shadow(0 6px 18px rgba(0,0,0,0.55)); }
 
   .kicker {
     position: relative; z-index: 3;
@@ -503,10 +505,12 @@
     <div class="col"><span class="bulb"></span><span class="bulb"></span></div>
   </div>
 
-  <div class="badge">
-    <img src="assets/crest.png" alt="Scuderia crest" class="badge-emblem"
-         onerror="this.style.display='none';var s=this.nextElementSibling;if(s)s.style.display='';">
-    <span style="display:none">SF</span>
+  <div class="badge has-logo">
+    <img src="assets/ferrari-badge.png" alt="Scuderia Ferrari badge" class="badge-emblem badge-official"
+         onerror="this.style.display='none';var c=document.getElementById('badgeCrest');if(c)c.style.display='block';">
+    <img id="badgeCrest" src="assets/crest.png" alt="" class="badge-emblem" style="display:none"
+         onerror="this.style.display='none';var t=document.getElementById('badgeSF');if(t)t.style.display='';">
+    <span id="badgeSF" style="display:none">SF</span>
   </div>
   <p class="kicker">Scuderia Ferrari · 1950 to Present</p>
   <h1>The <span class="accent">Long</span> Wait</h1>
@@ -866,9 +870,9 @@
     <p class="src">
       Historical data: Ergast Developer API / Jolpica-F1 community database (race results 1950–2024).
       Win, podium and points totals computed directly from race-result records; championship years from the
-      established F1 record. The Prancing Horse crest is a trademark of Ferrari S.p.A.; the gold laurel
-      emblem here is an original, invented placeholder, not the official logo. The car artwork is
-      AI-generated and is not a depiction of any specific Ferrari model. Independent editorial project, not
+      established F1 record. The Ferrari shield, Prancing Horse and "SF" marks are trademarks of
+      Ferrari S.p.A., used here editorially in tribute. The car artwork is AI-generated and is not a
+      depiction of any specific Ferrari model. Independent, non-commercial editorial project, not
       affiliated with or endorsed by Ferrari or Formula 1.
     </p>
   </div>
