@@ -541,7 +541,7 @@
     <span id="badgeSF" style="display:none">SF</span>
   </div>
   <p class="kicker">Scuderia Ferrari · 1950 to Present</p>
-  <h1>The <span class="accent">Long</span> Wait</h1>
+  <h1 id="siteTitle">The <span class="accent">Long</span> Wait</h1>
   <p class="dek">
     Formula 1's only ever-present team. Its most successful, by almost every record ever kept.
     And yet, since 2007, the Prancing Horse has been chasing a drivers' title it once owned outright.
@@ -692,7 +692,7 @@
     The most successful team in Formula 1 has spent the modern era
     <span class="accent">waiting for a title it used to win in its sleep.</span>
   </blockquote>
-  <cite>The Long Wait</cite>
+  <cite class="site-name">The Long Wait</cite>
 </section>
 
 <!-- 7. BAR ZOOM SCROLLY -->
@@ -885,7 +885,7 @@
 <!-- 14. FOOTER -->
 <footer>
   <div class="wrap">
-    <p><span class="sf">SF</span> &nbsp; <strong>The Long Wait</strong> · a data story about Scuderia Ferrari.</p>
+    <p><span class="sf">SF</span> &nbsp; <strong class="site-name">The Long Wait</strong> · a data story about Scuderia Ferrari.</p>
     <p>
       Headline figures are drawn from the complete Formula 1 record (1950–2024): <strong>249</strong> Grand
       Prix wins, <strong>841</strong> podiums, <strong>75</strong> seasons entered, and <strong>16</strong>
@@ -1221,6 +1221,29 @@
     }
   }
 
+  /* Site name flips on the live data: "Finally" within 10 years of a title,
+     otherwise "The Long Wait". Keyed off the year gap (not droughtBroken) so it
+     can flip back once a fresh decade-long drought opens up. */
+  function renderSiteName() {
+    var cy = new Date().getFullYear();
+    var lastTitle = Math.max(TITLES.driversYear, TITLES.constructorsYear);
+    var longWait = (cy - lastTitle) >= 10;
+    var name = longWait ? "The Long Wait" : "Finally";
+
+    var hero = document.getElementById("siteTitle");
+    if (hero) {
+      hero.innerHTML = longWait
+        ? 'The <span class="accent">Long</span> Wait'
+        : '<span class="accent">Finally</span>';
+    }
+    var names = document.querySelectorAll(".site-name");
+    for (var i = 0; i < names.length; i++) names[i].textContent = name;
+
+    document.title = name + " | Scuderia Ferrari";
+    var og = document.querySelector('meta[property="og:title"]');
+    if (og) og.setAttribute("content", name + " | Scuderia Ferrari");
+  }
+
   (function initTitles() {
     fetch("data/ferrari-titles.json", { cache: "no-store" })
       .then(function (r) { return r.ok ? r.json() : null; })
@@ -1231,7 +1254,7 @@
         }
       })
       .catch(function () { /* keep static fallback + baked disclaimer */ })
-      .finally(function () { renderDrought(); });
+      .finally(function () { renderDrought(); renderSiteName(); });
   })();
 })();
 </script>
