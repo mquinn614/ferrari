@@ -845,8 +845,8 @@
       constructors' / <strong>15</strong> drivers' championships. The drought is anchored to Ferrari's last
       <strong>confirmed</strong> titles: the Drivers' Championship of 2007 (Kimi Räikkönen, by one point)
       and the Constructors' Championship of 2008. The "years and counting" figure is computed live from
-      your device's date, so it never goes stale. This page makes no claim about the outcome of any season
-      after 2008.
+      your device's date, so it never goes stale. <span id="verifyLine">This page makes no automated claim
+      about seasons after 2008; the figures reflect Ferrari's last confirmed titles in 2007 and 2008.</span>
     </p>
     <p class="src">
       Historical data: Ergast Developer API / Jolpica-F1 community database (race results 1950–2024).
@@ -1131,17 +1131,49 @@
   /* ---------- margin + drought step observers ---------- */
   stepObserver(document.querySelectorAll("#margin .step"), function () {});
 
-  (function drought() {
+  /* ---------- live title verification (Jolpica-F1) with static fallback ---------- */
+  /* Baked-in defaults are the last confirmed titles; a successful fetch of the
+     cron-refreshed data file overrides them. Any failure keeps these values, so
+     the page never breaks on a network/API problem. */
+  var TITLES = { driversYear: 2007, constructorsYear: 2008, verifiedThrough: 2024, droughtBroken: false };
+
+  function renderDrought() {
     var num = document.getElementById("droughtNum");
     var since = document.getElementById("droughtSince");
     if (!num) return;
     var cy = new Date().getFullYear();
-    var DRV = 2007, CON = 2008;
+    var DRV = TITLES.driversYear, CON = TITLES.constructorsYear;
     var years = Math.max(0, cy - DRV);
     since.textContent = "since Ferrari's last drivers' title in " + DRV +
-      ", and " + (cy - CON) + " since its last constructors' crown.";
+      ", and " + Math.max(0, cy - CON) + " since its last constructors' crown.";
     onVisible(num, function () { countUp(num, years, 1500); }, 0.4);
     stepObserver(document.querySelectorAll("#drought .step"), function () {});
+  }
+
+  function renderVerifyLine() {
+    var vl = document.getElementById("verifyLine");
+    if (!vl) return;
+    if (TITLES.droughtBroken) {
+      vl.textContent = "Live-verified via the Jolpica-F1 API: Ferrari has won again — last titles now " +
+        TITLES.driversYear + " (Drivers') and " + TITLES.constructorsYear + " (Constructors').";
+    } else {
+      vl.textContent = "Live-verified via the Jolpica-F1 API: through the " + TITLES.verifiedThrough +
+        " season, Ferrari's last titles remain the " + TITLES.driversYear + " Drivers' and " +
+        TITLES.constructorsYear + " Constructors' Championships.";
+    }
+  }
+
+  (function initTitles() {
+    fetch("data/ferrari-titles.json", { cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (d && d.driversYear && d.constructorsYear) {
+          TITLES = d;
+          renderVerifyLine();   // only claim "live-verified" when the fetch actually succeeded
+        }
+      })
+      .catch(function () { /* keep static fallback + baked disclaimer */ })
+      .finally(function () { renderDrought(); });
   })();
 })();
 </script>
