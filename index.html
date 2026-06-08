@@ -474,9 +474,18 @@
     .scrolly, .scrolly.flip { grid-template-columns: 1fr; }
     .scrolly .steps { padding: 0; order: 2; }
     .scrolly .step { min-height: auto; padding: 44px 22px; opacity: 1; }
-    .scrolly .sticky { position: sticky; top: 0; height: 64vh; order: 1; }
+    .scrolly .sticky { position: sticky; top: 0; height: 50vh; order: 1; }
     .scrolly.flip .sticky { order: 1; }
     .viz { padding: 16px; }
+    /* shrink the heavier sticky visuals so they sit comfortably in 50vh
+       and the step text isn't pushed to the very bottom of the screen */
+    .barpanel { padding: 16px; }
+    .barpanel .bars { height: 168px; }
+    .tower .trow { padding: 12px 14px; }
+    .tower .pts { font-size: 1.5rem; }
+    .tower-cap { margin-top: 10px; }
+    .drought-viz .big { font-size: clamp(4.5rem, 19vw, 7.5rem); }
+    #circuitSvg { max-height: 40vh; }
     .pylon .grid { grid-template-columns: repeat(2, 1fr); }
     .prose { padding: 60px 22px; }
   }
