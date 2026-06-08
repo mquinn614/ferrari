@@ -1,0 +1,46 @@
+name: Deploy to Bluehost
+
+# Deploys the site to mqsandbox.com/ferrari on every push to main.
+# Transport: rsync over SSH (incremental — only changed files are sent).
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:   # lets you trigger a manual deploy from the Actions tab
+
+# Never let two deploys run at once; a newer push supersedes an in-flight one.
+concurrency:
+  group: deploy-bluehost
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure SSH
+        env:
+          SSH_KEY:  ${{ secrets.BLUEHOST_SSH_KEY }}
+          SSH_HOST: ${{ secrets.BLUEHOST_HOST }}
+          SSH_PORT: ${{ secrets.BLUEHOST_SSH_PORT }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          ssh-keyscan -p "${SSH_PORT:-22}" "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Deploy via rsync
+        env:
+          SSH_HOST: ${{ secrets.BLUEHOST_HOST }}
+          SSH_USER: ${{ secrets.BLUEHOST_USER }}
+          SSH_PORT: ${{ secrets.BLUEHOST_SSH_PORT }}
+          DEST_PATH: ${{ secrets.BLUEHOST_PATH }}
+        run: |
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/id_deploy -p ${SSH_PORT:-22} -o StrictHostKeyChecking=accept-new" \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='.claude/' \
+            --exclude='*.md' \
+            ./ "${SSH_USER}@${SSH_HOST}:${DEST_PATH}"
