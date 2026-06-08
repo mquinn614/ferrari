@@ -1,46 +1,97 @@
-name: Deploy to Bluehost
+name: Deploy
 
-# Deploys the site to mqsandbox.com/ferrari on every push to main.
-# Transport: rsync over SSH (incremental — only changed files are sent).
+# Deploys the static site to mqsandbox.com/ferrari on every push to main.
+# Same proven pattern as the ballin-out / flipoff / frog-quest repos:
+# sshpass + scp over SSH (non-interactive password login), host-key
+# checking disabled because Bluehost's keys are unstable across logins.
+#
+# Required GitHub Secrets (reuse the same values as your other repos;
+# only SFTP_REMOTE_PATH is project-specific):
+#   SFTP_HOST          SSH host           e.g. mqsandbox.com
+#   SFTP_USERNAME      cPanel / SSH user  e.g. gpbjxtmy
+#   SFTP_PASSWORD      cPanel / SSH password
+#   SFTP_REMOTE_PATH   target dir         e.g. /home1/gpbjxtmy/public_html/sandbox/ferrari
+#   SFTP_PORT          optional; defaults to 22
 on:
   push:
     branches: [main]
-  workflow_dispatch:   # lets you trigger a manual deploy from the Actions tab
+  workflow_dispatch:
 
-# Never let two deploys run at once; a newer push supersedes an in-flight one.
 concurrency:
-  group: deploy-bluehost
+  group: deploy-main
   cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Configure SSH
-        env:
-          SSH_KEY:  ${{ secrets.BLUEHOST_SSH_KEY }}
-          SSH_HOST: ${{ secrets.BLUEHOST_HOST }}
-          SSH_PORT: ${{ secrets.BLUEHOST_SSH_PORT }}
+      - name: Stage static site
         run: |
-          mkdir -p ~/.ssh
-          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_deploy
-          chmod 600 ~/.ssh/id_deploy
-          ssh-keyscan -p "${SSH_PORT:-22}" "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          set -euo pipefail
+          rm -rf site && mkdir -p site
+          cp index.html site/
+          cp -R assets site/
+          find site -type f | sort
 
-      - name: Deploy via rsync
+      - name: Upload site via scp (SFTP-compatible)
         env:
-          SSH_HOST: ${{ secrets.BLUEHOST_HOST }}
-          SSH_USER: ${{ secrets.BLUEHOST_USER }}
-          SSH_PORT: ${{ secrets.BLUEHOST_SSH_PORT }}
-          DEST_PATH: ${{ secrets.BLUEHOST_PATH }}
+          SSHPASS:     ${{ secrets.SFTP_PASSWORD }}
+          DEPLOY_HOST: ${{ secrets.SFTP_HOST }}
+          DEPLOY_USER: ${{ secrets.SFTP_USERNAME }}
+          DEPLOY_PORT: ${{ secrets.SFTP_PORT || '22' }}
+          DEPLOY_PATH: ${{ secrets.SFTP_REMOTE_PATH }}
         run: |
-          rsync -avz --delete \
-            -e "ssh -i ~/.ssh/id_deploy -p ${SSH_PORT:-22} -o StrictHostKeyChecking=accept-new" \
-            --exclude='.git/' \
-            --exclude='.github/' \
-            --exclude='.claude/' \
-            --exclude='*.md' \
-            ./ "${SSH_USER}@${SSH_HOST}:${DEST_PATH}"
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y sshpass
+
+          DEPLOY_PORT="${DEPLOY_PORT:-22}"
+          if ! [[ "${DEPLOY_PORT}" =~ ^[0-9]+$ ]]; then
+            echo "::error::SFTP_PORT must be numeric (1-65535). Got: '${DEPLOY_PORT}'"
+            exit 1
+          fi
+          if [ "${DEPLOY_PORT}" -lt 1 ] || [ "${DEPLOY_PORT}" -gt 65535 ]; then
+            echo "::error::SFTP_PORT out of range (1-65535): ${DEPLOY_PORT}"
+            exit 1
+          fi
+
+          : "${DEPLOY_HOST:?SFTP_HOST secret is required}"
+          : "${DEPLOY_USER:?SFTP_USERNAME secret is required}"
+          : "${DEPLOY_PATH:?SFTP_REMOTE_PATH secret is required}"
+          : "${SSHPASS:?SFTP_PASSWORD secret is required}"
+
+          export SSHPASS
+          REMOTE_BASE="${DEPLOY_PATH%/}"
+          cd site
+          sshpass -e scp -r -P "${DEPLOY_PORT}" \
+            -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+            . "${DEPLOY_USER}@${DEPLOY_HOST}:${REMOTE_BASE}/"
+
+      - name: Verify deploy landed
+        env:
+          SSHPASS:     ${{ secrets.SFTP_PASSWORD }}
+          DEPLOY_HOST: ${{ secrets.SFTP_HOST }}
+          DEPLOY_USER: ${{ secrets.SFTP_USERNAME }}
+          DEPLOY_PORT: ${{ secrets.SFTP_PORT || '22' }}
+          DEPLOY_PATH: ${{ secrets.SFTP_REMOTE_PATH }}
+        run: |
+          set -euo pipefail
+          DEPLOY_PORT="${DEPLOY_PORT:-22}"
+          export SSHPASS
+          REMOTE_BASE="${DEPLOY_PATH%/}"
+          sshpass -e ssh -p "${DEPLOY_PORT}" \
+            -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+            "${DEPLOY_USER}@${DEPLOY_HOST}" \
+            "test -f '${REMOTE_BASE}/index.html' && \
+             test -f '${REMOTE_BASE}/assets/hero-car.png' && \
+             ls -la '${REMOTE_BASE}'"
+
+      - name: Deployment summary
+        run: echo "✓ Deployed to ${{ secrets.SFTP_HOST }} → mqsandbox.com/ferrari"
