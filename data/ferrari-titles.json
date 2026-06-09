@@ -2,6 +2,7 @@
   "driversYear": 2007,
   "constructorsYear": 2008,
   "verifiedThrough": 2025,
+  "recordThrough": 2024,
   "droughtBroken": false,
   "source": "https://api.jolpi.ca/ergast/f1/",
   "updated": "2026-06-08"

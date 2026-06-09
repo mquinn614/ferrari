@@ -683,7 +683,7 @@
     <span class="key"><span class="sw" style="background:#e7c873;border-radius:50%;width:11px;height:11px"></span> Constructors' Championship</span>
     <span class="key"><span class="sw" style="background:rgba(212,0,0,0.18);border:1px solid #d40000"></span> The drought (since 2008)</span>
   </div>
-  <p class="chart-note">Source: Ergast / Jolpica F1 historical database, 1950–2024. Hover or tap any bar for detail.</p>
+  <p class="chart-note">Source: Ergast / Jolpica F1 historical database, 1950–<span class="record-year">2024</span>. Hover or tap any bar for detail.</p>
 </section>
 
 <!-- 6. PULLQUOTE -->
@@ -887,19 +887,20 @@
   <div class="wrap">
     <p><span class="sf">SF</span> &nbsp; <strong class="site-name">The Long Wait</strong> · a data story about Scuderia Ferrari.</p>
     <p>
-      Headline figures are drawn from the complete Formula 1 record (1950–2024): <strong>249</strong> Grand
+      Headline figures are drawn from the complete Formula 1 record (1950–<span class="record-year">2024</span>): <strong>249</strong> Grand
       Prix wins, <strong>841</strong> podiums, <strong>75</strong> seasons entered, and <strong>16</strong>
       constructors' / <strong>15</strong> drivers' championships. The drought is anchored to Ferrari's last
       <strong>confirmed</strong> titles: the Drivers' Championship of 2007 (Kimi Räikkönen, by one point)
       and the Constructors' Championship of 2008. The "years and counting" figure is computed live from
-      your device's date, so it never goes stale. <span id="verifyLine">This page makes no automated claim
-      about seasons after 2008; the figures reflect Ferrari's last confirmed titles in 2007 and 2008.</span>
+      your device's date, so it never goes stale. <span id="verifyLine">Ferrari's last titles: the 2007
+      Drivers' Championship and the 2008 Constructors' Championship.</span>
     </p>
     <p class="src">
-      Historical data: Ergast Developer API / Jolpica-F1 community database (race results 1950–2024).
+      Historical data: Ergast Developer API / Jolpica-F1 community database (race results 1950–<span class="record-year">2024</span>).
       Win, podium and points totals computed directly from race-result records; championship years from the
-      established F1 record. The Ferrari shield, Prancing Horse and "SF" marks are trademarks of
-      Ferrari S.p.A., used here editorially in tribute. The car artwork is AI-generated and is not a
+      established F1 record. Ferrari, the Prancing Horse, the Scuderia Ferrari shield and the "SF"
+      monogram are registered trademarks of Ferrari S.p.A., used here for editorial and non-commercial
+      purposes. The car artwork is AI-generated and is not a
       depiction of any specific Ferrari model. Independent, non-commercial editorial project, not
       affiliated with or endorsed by Ferrari or Formula 1.
     </p>
@@ -1193,7 +1194,7 @@
   /* Baked-in defaults are the last confirmed titles; a successful fetch of the
      cron-refreshed data file overrides them. Any failure keeps these values, so
      the page never breaks on a network/API problem. */
-  var TITLES = { driversYear: 2007, constructorsYear: 2008, verifiedThrough: 2024, droughtBroken: false };
+  var TITLES = { driversYear: 2007, constructorsYear: 2008, verifiedThrough: 2024, recordThrough: 2024, droughtBroken: false };
 
   function renderDrought() {
     var num = document.getElementById("droughtNum");
@@ -1206,6 +1207,16 @@
       ", and " + Math.max(0, cy - CON) + " since its last constructors' crown.";
     onVisible(num, function () { countUp(num, years, 1500); }, 0.4);
     stepObserver(document.querySelectorAll("#drought .step"), function () {});
+  }
+
+  /* The historical totals + chart cover seasons through recordThrough, which is
+     a distinct, earlier season than verifiedThrough (the drought check runs
+     ahead of the full per-season stats). Drive every year label off that one
+     value so the page is never manually stale. */
+  function renderRecordYears() {
+    var yr = TITLES.recordThrough || 2024;
+    var nodes = document.querySelectorAll(".record-year");
+    for (var i = 0; i < nodes.length; i++) nodes[i].textContent = yr;
   }
 
   function renderVerifyLine() {
@@ -1251,6 +1262,7 @@
         if (d && d.driversYear && d.constructorsYear) {
           TITLES = d;
           renderVerifyLine();   // only claim "live-verified" when the fetch actually succeeded
+          renderRecordYears();
         }
       })
       .catch(function () { /* keep static fallback + baked disclaimer */ })

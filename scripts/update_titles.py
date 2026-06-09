@@ -99,6 +99,10 @@ def main():
         "driversYear": drivers_year,
         "constructorsYear": constructors_year,
         "verifiedThrough": latest_complete,
+        # Season the per-year stats/chart actually cover. Preserved across runs;
+        # bumped only when the chart arrays are regenerated (a future task), so the
+        # historical-record labels never claim a season the totals don't include.
+        "recordThrough": int(cur.get("recordThrough", 2024)),
         "droughtBroken": drivers_year > 2007 or constructors_year > 2008,
         "source": "https://api.jolpi.ca/ergast/f1/",
         "updated": today.isoformat(),
