@@ -21,6 +21,7 @@ import json
 import os
 import sys
 import time
+import urllib.error
 import urllib.request
 
 API = "https://api.jolpi.ca/ergast/f1"
@@ -38,9 +39,13 @@ BASELINE = {"wins": 249, "podiums": 841, "seasons": 75,
 
 def get(path):
     sep = "&" if "?" in path else "?"
-    req = urllib.request.Request(API + path + sep + "format=json", headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=30) as r:
-        return json.load(r)
+    url = API + path + sep + "format=json"
+    req = urllib.request.Request(url, headers={"User-Agent": UA})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            return json.load(r)
+    except urllib.error.HTTPError as e:
+        raise RuntimeError("HTTP %s for %s" % (e.code, url)) from e
 
 
 # ---------------------------------------------------------------- title checks
@@ -113,11 +118,14 @@ def wins_array(by_year, start, end):
 
 def compute_chart(latest_complete, start_year=START_YEAR):
     """Build the chart block from Jolpica, constrained to completed seasons."""
+    print("chart: paging Ferrari finishes P1/P2/P3...", file=sys.stderr)
     p1 = [y for y in result_seasons(1) if y <= latest_complete]
     p2 = [y for y in result_seasons(2) if y <= latest_complete]
     p3 = [y for y in result_seasons(3) if y <= latest_complete]
+    print("chart: seasons entered...", file=sys.stderr)
     seasons_list = get("/constructors/ferrari/seasons/?limit=100")["MRData"]["SeasonTable"]["Seasons"]
     seasons = sum(1 for s in seasons_list if int(s["season"]) <= latest_complete)
+    print("chart: title years...", file=sys.stderr)
     cons_years = [y for y in title_years("constructorStandings") if y <= latest_complete]
     drv_years = [y for y in title_years("driverStandings") if y <= latest_complete]
     return {
