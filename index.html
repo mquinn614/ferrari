@@ -887,9 +887,9 @@
   <div class="wrap">
     <p><span class="sf">SF</span> &nbsp; <strong class="site-name">The Long Wait</strong> · a data story about Scuderia Ferrari.</p>
     <p>
-      Headline figures are drawn from the complete Formula 1 record (1950–<span class="record-year">2024</span>): <strong>249</strong> Grand
-      Prix wins, <strong>841</strong> podiums, <strong>75</strong> seasons entered, and <strong>16</strong>
-      constructors' / <strong>15</strong> drivers' championships. The drought is anchored to Ferrari's last
+      Headline figures are drawn from the complete Formula 1 record (1950–<span class="record-year">2024</span>): <strong id="totalWins">249</strong> Grand
+      Prix wins, <strong id="totalPodiums">841</strong> podiums, <strong id="totalSeasons">75</strong> seasons entered, and <strong id="totalConstructors">16</strong>
+      constructors' / <strong id="totalDrivers">15</strong> drivers' championships. The drought is anchored to Ferrari's last
       <strong>confirmed</strong> titles: the Drivers' Championship of 2007 (Kimi Räikkönen, by one point)
       and the Constructors' Championship of 2008. The "years and counting" figure is computed live from
       your device's date, so it never goes stale. <span id="verifyLine">Ferrari's last titles: the 2007
@@ -1075,14 +1075,28 @@
   })();
 
   /* ---------- wins chart (centerpiece) ---------- */
-  (function winsChart() {
+  var CHART_FALLBACK = {
+    startYear: 1950,
+    // Ferrari wins per season from 1950; computed from Ergast/Jolpica race results.
+    wins: [0,3,7,7,2,1,6,0,2,2,1,5,0,1,3,0,2,0,1,0,4,2,1,0,3,6,6,4,5,6,0,2,3,4,1,2,0,2,1,3,6,0,0,0,1,1,3,5,6,6,10,9,15,8,15,1,9,9,8,1,5,1,3,2,0,3,0,5,6,3,0,0,4,1,5],
+    driversTitleYears: [1952,1953,1956,1958,1961,1964,1975,1977,1979,2000,2001,2002,2003,2004,2007],
+    constructorsTitleYears: [1961,1964,1975,1976,1977,1979,1982,1983,1999,2000,2001,2002,2003,2004,2007,2008],
+    totals: { wins: 249, podiums: 841, seasons: 75, constructorsTitles: 16, driversTitles: 15 }
+  };
+  var CHARTDATA = CHART_FALLBACK;
+
+  function buildWinsChart() {
     var svg = document.getElementById("winsChart");
     if (!svg) return;
-    var startYear = 1950;
-    // Ferrari wins per season 1950..2024, computed from Ergast race-result records.
-    var wins = [0,3,7,7,2,1,6,0,2,2,1,5,0,1,3,0,2,0,1,0,4,2,1,0,3,6,6,4,5,6,0,2,3,4,1,2,0,2,1,3,6,0,0,0,1,1,3,5,6,6,10,9,15,8,15,1,9,9,8,1,5,1,3,2,0,3,0,5,6,3,0,0,4,1,5];
-    var driversT = {1952:1,1953:1,1956:1,1958:1,1961:1,1964:1,1975:1,1977:1,1979:1,2000:1,2001:1,2002:1,2003:1,2004:1,2007:1};
-    var consT = {1961:1,1964:1,1975:1,1976:1,1977:1,1979:1,1982:1,1983:1,1999:1,2000:1,2001:1,2002:1,2003:1,2004:1,2007:1,2008:1};
+    var C = CHARTDATA || CHART_FALLBACK;
+    var startYear = C.startYear || 1950;
+    var wins = (C.wins && C.wins.length) ? C.wins : CHART_FALLBACK.wins;
+    var driversT = {}, consT = {};
+    (C.driversTitleYears || CHART_FALLBACK.driversTitleYears).forEach(function (y) { driversT[y] = 1; });
+    (C.constructorsTitleYears || CHART_FALLBACK.constructorsTitleYears).forEach(function (y) { consT[y] = 1; });
+    var lastYear = startYear + wins.length - 1;
+    var lastTitle = Math.max(TITLES.driversYear, TITLES.constructorsYear);
+    setChartTotals(C.totals);
 
     var W = 1040, H = 460, padL = 40, padR = 16, padT = 26, padB = 46;
     var plotW = W - padL - padR, plotH = H - padT - padB;
@@ -1092,14 +1106,16 @@
     function x(i) { return padL + i * bw; }
     function y(v) { return padT + plotH - (v / maxW) * plotH; }
 
-    // drought band (2009 onward => index 59)
-    var dStart = x(2009 - startYear);
-    svg.appendChild(el("rect", { x: dStart, y: padT, width: (padL + plotW) - dStart, height: plotH, fill: "rgba(212,0,0,0.10)" }));
-    var dline = el("line", { x1: dStart, y1: padT, x2: dStart, y2: padT + plotH, stroke: "#d40000", "stroke-width": 1, "stroke-dasharray": "4 4", opacity: .7 });
-    svg.appendChild(dline);
-    var dlab = el("text", { x: dStart + 6, y: padT + 16, fill: "#ff6b6b", "font-family": "JetBrains Mono, ui-monospace, monospace", "font-size": 12, "font-weight": 700 });
-    dlab.textContent = "NO TITLES SINCE 2008 →";
-    svg.appendChild(dlab);
+    // drought band: shade every season after Ferrari's most recent title
+    if (lastTitle < lastYear) {
+      var dStart = x((lastTitle + 1) - startYear);
+      svg.appendChild(el("rect", { x: dStart, y: padT, width: (padL + plotW) - dStart, height: plotH, fill: "rgba(212,0,0,0.10)" }));
+      var dline = el("line", { x1: dStart, y1: padT, x2: dStart, y2: padT + plotH, stroke: "#d40000", "stroke-width": 1, "stroke-dasharray": "4 4", opacity: .7 });
+      svg.appendChild(dline);
+      var dlab = el("text", { x: dStart + 6, y: padT + 16, fill: "#ff6b6b", "font-family": "JetBrains Mono, ui-monospace, monospace", "font-size": 12, "font-weight": 700 });
+      dlab.textContent = "NO TITLES SINCE " + lastTitle + " →";
+      svg.appendChild(dlab);
+    }
 
     // gridlines + y labels
     [0, 5, 10, 15].forEach(function (v) {
@@ -1108,7 +1124,7 @@
       t.textContent = v; svg.appendChild(t);
     });
     // x decade labels
-    for (var yr = 1950; yr <= 2020; yr += 10) {
+    for (var yr = 1950; yr <= lastYear; yr += 10) {
       var tx = el("text", { x: x(yr - startYear) + bw / 2, y: H - 14, fill: "#6b6b73", "font-family": "JetBrains Mono, ui-monospace, monospace", "font-size": 11, "text-anchor": "middle" });
       tx.textContent = "’" + String(yr).slice(2); if (yr === 1950) tx.textContent = "1950"; if (yr === 2000) tx.textContent = "2000";
       svg.appendChild(tx);
@@ -1124,7 +1140,7 @@
       var bar = el("rect", {
         x: x(i) + bw * 0.12, width: bw * 0.76,
         y: y(0), height: 0, rx: 1.5,
-        fill: gold ? "url(#gGold)" : (year >= 2009 ? "url(#gMuted)" : "url(#gRed)")
+        fill: gold ? "url(#gGold)" : (year > lastTitle ? "url(#gMuted)" : "url(#gRed)")
       });
       bar.dataset.fullH = fullH; bar.dataset.ty = year; bar.dataset.tv = v;
       bar.dataset.tt = (driversT[year] ? "★ Drivers' title" : "") + (consT[year] ? (driversT[year] ? " · ● Constructors'" : "● Constructors' title") : "");
@@ -1174,7 +1190,7 @@
       });
     }
     onVisible(svg, grow, 0.2);
-  })();
+  }
 
   /* ---------- bar zoom ---------- */
   (function barzoom() {
@@ -1219,6 +1235,16 @@
     for (var i = 0; i < nodes.length; i++) nodes[i].textContent = yr;
   }
 
+  function setChartTotals(t) {
+    if (!t) return;
+    var map = { totalWins: t.wins, totalPodiums: t.podiums, totalSeasons: t.seasons,
+                totalConstructors: t.constructorsTitles, totalDrivers: t.driversTitles };
+    for (var id in map) {
+      var e = document.getElementById(id);
+      if (e && map[id] != null) e.textContent = map[id];
+    }
+  }
+
   function renderVerifyLine() {
     var vl = document.getElementById("verifyLine");
     if (!vl) return;
@@ -1261,12 +1287,12 @@
       .then(function (d) {
         if (d && d.driversYear && d.constructorsYear) {
           TITLES = d;
+          if (d.chart && d.chart.wins && d.chart.wins.length) CHARTDATA = d.chart;
           renderVerifyLine();   // only claim "live-verified" when the fetch actually succeeded
-          renderRecordYears();
         }
       })
       .catch(function () { /* keep static fallback + baked disclaimer */ })
-      .finally(function () { renderDrought(); renderSiteName(); });
+      .finally(function () { renderRecordYears(); renderDrought(); renderSiteName(); buildWinsChart(); });
   })();
 })();
 </script>
