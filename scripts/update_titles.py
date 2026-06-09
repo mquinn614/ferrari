@@ -36,6 +36,14 @@ START_YEAR = 1950
 BASELINE = {"wins": 249, "podiums": 841, "seasons": 75,
             "constructorsTitles": 16, "driversTitles": 15}
 
+# Ferrari championship years through 2024 — immutable history. Any new title
+# (2009+) is detected live in the season scan below and appended, so nothing
+# that can actually change is hardcoded. (Matches the page's chart fallback.)
+CONS_TITLE_YEARS = [1961, 1964, 1975, 1976, 1977, 1979, 1982, 1983,
+                    1999, 2000, 2001, 2002, 2003, 2004, 2007, 2008]
+DRV_TITLE_YEARS = [1952, 1953, 1956, 1958, 1961, 1964, 1975, 1977,
+                   1979, 2000, 2001, 2002, 2003, 2004, 2007]
+
 
 def get(path):
     sep = "&" if "?" in path else "?"
@@ -99,12 +107,6 @@ def result_seasons(position):
     return seasons
 
 
-def title_years(kind):
-    """Seasons Ferrari (or a Ferrari driver) finished 1st in the given standings."""
-    lists = get("/constructors/ferrari/%s/1/?limit=100" % kind)["MRData"]["StandingsTable"]["StandingsLists"]
-    return sorted(int(s["season"]) for s in lists)
-
-
 def count_by_year(seasons):
     by = {}
     for y in seasons:
@@ -116,8 +118,11 @@ def wins_array(by_year, start, end):
     return [by_year.get(y, 0) for y in range(start, end + 1)]
 
 
-def compute_chart(latest_complete, start_year=START_YEAR):
-    """Build the chart block from Jolpica, constrained to completed seasons."""
+def compute_chart(latest_complete, cons_years, drv_years, start_year=START_YEAR):
+    """Build the chart block from Jolpica, constrained to completed seasons.
+
+    Per-season wins and win/podium/season totals are aggregated live; the title
+    year lists are passed in (immutable history + any live-detected new titles)."""
     print("chart: paging Ferrari finishes P1/P2/P3...", file=sys.stderr)
     p1 = [y for y in result_seasons(1) if y <= latest_complete]
     p2 = [y for y in result_seasons(2) if y <= latest_complete]
@@ -125,9 +130,6 @@ def compute_chart(latest_complete, start_year=START_YEAR):
     print("chart: seasons entered...", file=sys.stderr)
     seasons_list = get("/constructors/ferrari/seasons/?limit=100")["MRData"]["SeasonTable"]["Seasons"]
     seasons = sum(1 for s in seasons_list if int(s["season"]) <= latest_complete)
-    print("chart: title years...", file=sys.stderr)
-    cons_years = [y for y in title_years("constructorStandings") if y <= latest_complete]
-    drv_years = [y for y in title_years("driverStandings") if y <= latest_complete]
     return {
         "startYear": start_year,
         "wins": wins_array(count_by_year(p1), start_year, latest_complete),
@@ -192,23 +194,28 @@ def main():
         return 1
 
     # Scan seasons since the last recorded titles for any new Ferrari championship.
+    new_cons, new_drv = [], []
     for year in range(2009, latest_complete + 1):
         try:
-            if year > constructors_year and constructors_champion(year) == FERRARI:
-                constructors_year = year
-            if year > drivers_year and FERRARI in drivers_champion_constructors(year):
-                drivers_year = year
+            if constructors_champion(year) == FERRARI:
+                new_cons.append(year)
+                constructors_year = max(constructors_year, year)
+            if FERRARI in drivers_champion_constructors(year):
+                new_drv.append(year)
+                drivers_year = max(drivers_year, year)
         except Exception as e:  # never write partial/uncertain title results
             print("standings check failed for %d: %s" % (year, e), file=sys.stderr)
             return 1
         time.sleep(0.3)
+    cons_years = CONS_TITLE_YEARS + new_cons
+    drv_years = DRV_TITLE_YEARS + new_drv
 
     # Chart data is best-effort: if it fails or looks wrong, keep the last good
     # chart and don't advance recordThrough, but still update the title fields.
     record_through = int(cur.get("recordThrough", 2024))
     chart = cur.get("chart")
     try:
-        fresh = compute_chart(latest_complete)
+        fresh = compute_chart(latest_complete, cons_years, drv_years)
         if chart_passes_guards(fresh, latest_complete):
             chart = fresh
             record_through = latest_complete
