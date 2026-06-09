@@ -38,6 +38,7 @@ jobs:
           rm -rf site && mkdir -p site
           cp index.html site/
           cp -R assets site/
+          cp -R data site/
           find site -type f | sort
 
       - name: Upload site via scp (SFTP-compatible)
@@ -91,6 +92,7 @@ jobs:
             "${DEPLOY_USER}@${DEPLOY_HOST}" \
             "test -f '${REMOTE_BASE}/index.html' && \
              test -f '${REMOTE_BASE}/assets/hero-car.png' && \
+             test -f '${REMOTE_BASE}/data/ferrari-titles.json' && \
              ls -la '${REMOTE_BASE}'"
 
       - name: Deployment summary
