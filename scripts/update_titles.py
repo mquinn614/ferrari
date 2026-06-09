@@ -145,22 +145,29 @@ def compute_chart(latest_complete, cons_years, drv_years, start_year=START_YEAR)
     }
 
 
-def chart_passes_guards(chart, latest_complete):
+def chart_guard_failures(chart, latest_complete):
+    """Return a list of human-readable guard failures (empty list == all good)."""
     t = chart["totals"]
-    return (
-        t["wins"] >= BASELINE["wins"]
-        and t["podiums"] >= BASELINE["podiums"]
-        and t["seasons"] >= BASELINE["seasons"]
-        and t["constructorsTitles"] >= BASELINE["constructorsTitles"]
-        and t["driversTitles"] >= BASELINE["driversTitles"]
-        and t["wins"] <= t["podiums"]
-        and sum(chart["wins"]) == t["wins"]
-        and len(chart["wins"]) == latest_complete - chart["startYear"] + 1
-        and t["constructorsTitles"] == len(chart["constructorsTitleYears"])
-        and t["driversTitles"] == len(chart["driversTitleYears"])
-        and (not chart["constructorsTitleYears"] or max(chart["constructorsTitleYears"]) <= latest_complete)
-        and (not chart["driversTitleYears"] or max(chart["driversTitleYears"]) <= latest_complete)
-    )
+    fails = []
+    for key in ("wins", "podiums", "seasons", "constructorsTitles", "driversTitles"):
+        if t[key] < BASELINE[key]:
+            fails.append("%s %d < baseline %d" % (key, t[key], BASELINE[key]))
+    if t["wins"] > t["podiums"]:
+        fails.append("wins %d > podiums %d" % (t["wins"], t["podiums"]))
+    if sum(chart["wins"]) != t["wins"]:
+        fails.append("sum(wins) %d != total wins %d" % (sum(chart["wins"]), t["wins"]))
+    expected_len = latest_complete - chart["startYear"] + 1
+    if len(chart["wins"]) != expected_len:
+        fails.append("wins length %d != %d" % (len(chart["wins"]), expected_len))
+    if t["constructorsTitles"] != len(chart["constructorsTitleYears"]):
+        fails.append("constructorsTitles count mismatch")
+    if t["driversTitles"] != len(chart["driversTitleYears"]):
+        fails.append("driversTitles count mismatch")
+    if chart["constructorsTitleYears"] and max(chart["constructorsTitleYears"]) > latest_complete:
+        fails.append("constructorsTitleYears beyond latest_complete")
+    if chart["driversTitleYears"] and max(chart["driversTitleYears"]) > latest_complete:
+        fails.append("driversTitleYears beyond latest_complete")
+    return fails
 
 
 # --------------------------------------------------------------------- runtime
@@ -216,11 +223,14 @@ def main():
     chart = cur.get("chart")
     try:
         fresh = compute_chart(latest_complete, cons_years, drv_years)
-        if chart_passes_guards(fresh, latest_complete):
+        print("chart totals: %s | wins_len=%d sum_wins=%d" % (
+            fresh["totals"], len(fresh["wins"]), sum(fresh["wins"])), file=sys.stderr)
+        fails = chart_guard_failures(fresh, latest_complete)
+        if not fails:
             chart = fresh
             record_through = latest_complete
         else:
-            print("chart guards failed; preserving existing chart data", file=sys.stderr)
+            print("chart guards failed (%s); preserving existing chart data" % "; ".join(fails), file=sys.stderr)
     except Exception as e:
         print("chart aggregation failed (%s); preserving existing chart data" % e, file=sys.stderr)
 
@@ -255,16 +265,16 @@ def selftest():
         "totals": {"wins": 304, "podiums": 900, "seasons": 76,
                    "constructorsTitles": 16, "driversTitles": 15},
     }
-    assert chart_passes_guards(good, 2025), "valid chart should pass"
+    assert not chart_guard_failures(good, 2025), chart_guard_failures(good, 2025)
     below = json.loads(json.dumps(good))
     below["totals"]["wins"] = 248
-    assert not chart_passes_guards(below, 2025), "below-baseline wins should fail"
+    assert chart_guard_failures(below, 2025), "below-baseline wins should fail"
     wrong_len = json.loads(json.dumps(good))
     wrong_len["wins"] = [4] * 40
-    assert not chart_passes_guards(wrong_len, 2025), "wins length mismatch should fail"
+    assert chart_guard_failures(wrong_len, 2025), "wins length mismatch should fail"
     mism = json.loads(json.dumps(good))
     mism["driversTitleYears"] = list(range(1990, 2004))     # 14 != 15
-    assert not chart_passes_guards(mism, 2025), "title-count mismatch should fail"
+    assert chart_guard_failures(mism, 2025), "title-count mismatch should fail"
     print("selftest OK")
     return 0
 
