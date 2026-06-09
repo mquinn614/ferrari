@@ -4,11 +4,11 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>The Long Wait | Scuderia Ferrari</title>
-<meta name="description" content="Formula 1's only ever-present team and its most successful, 249 wins, 16 constructors' and 15 drivers' titles, has been chasing a championship it once owned since 2007. The story of the long wait, told in real data." />
+<meta name="description" content="Formula 1's only ever-present team — and statistically its most successful — has been chasing a championship it once owned since 2007. The story of the long wait, told in real data." />
 <meta name="theme-color" content="#d40000" />
 <meta property="og:type" content="article" />
 <meta property="og:title" content="The Long Wait | Scuderia Ferrari" />
-<meta property="og:description" content="75 seasons. 249 wins. And the longest title drought of Ferrari's modern era, visualised with real Formula 1 data." />
+<meta property="og:description" content="Seven decades of racing. Hundreds of wins. And the longest title drought of Ferrari's modern era, visualised with real Formula 1 data." />
 <meta name="twitter:card" content="summary_large_image" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -548,7 +548,7 @@
   </p>
 
   <div class="hero-car" id="heroCar">
-    <img src="assets/hero-car.png" alt="Scuderia Ferrari-style Formula 1 car"
+    <img src="assets/hero-car.webp" alt="Scuderia Ferrari-style Formula 1 car"
          onerror="this.style.display='none'; var s=this.nextElementSibling; if (s) s.style.display='block';">
     <svg viewBox="0 0 460 140" role="img" aria-label="Stylised Formula 1 car" style="display:none">
       <defs>
@@ -593,7 +593,7 @@
   <p>
     It is not merely longevity. By the records that matter most, Ferrari sits atop the sport: more
     constructors' titles than anyone, more drivers' crowns than any other team has delivered, and a
-    haul of <strong>249 race wins</strong> and <strong>841 podiums</strong> no rival has approached.
+    haul of <strong><span data-stat="wins">248</span> race wins</strong> and <strong><span data-stat="podiums">836</span> podiums</strong> no rival has approached.
     Statistically, the Prancing Horse is the most successful team in the history of grand prix racing.
   </p>
   <p>
@@ -683,7 +683,7 @@
     <span class="key"><span class="sw" style="background:#e7c873;border-radius:50%;width:11px;height:11px"></span> Constructors' Championship</span>
     <span class="key"><span class="sw" style="background:rgba(212,0,0,0.18);border:1px solid #d40000"></span> The drought (since 2008)</span>
   </div>
-  <p class="chart-note">Source: Ergast / Jolpica F1 historical database, 1950–<span class="record-year">2024</span>. Hover or tap any bar for detail.</p>
+  <p class="chart-note">Source: Ergast / Jolpica F1 historical database, 1950–<span class="record-year">2025</span>. Hover or tap any bar for detail.</p>
 </section>
 
 <!-- 6. PULLQUOTE -->
@@ -843,11 +843,11 @@
       <h2>The most successful team in the sport's history.</h2>
     </div>
     <div class="grid">
-      <div class="cell"><div class="num" data-count="249">0</div><div class="lab">Grand Prix<br>wins</div></div>
-      <div class="cell gold"><div class="num" data-count="16">0</div><div class="lab">Constructors'<br>titles</div></div>
-      <div class="cell gold"><div class="num" data-count="15">0</div><div class="lab">Drivers'<br>titles</div></div>
-      <div class="cell"><div class="num" data-count="841">0</div><div class="lab">Podium<br>finishes</div></div>
-      <div class="cell"><div class="num" data-count="75">0</div><div class="lab">Seasons · the only<br>ever-present team</div></div>
+      <div class="cell"><div class="num" data-count="248" data-stat="wins">0</div><div class="lab">Grand Prix<br>wins</div></div>
+      <div class="cell gold"><div class="num" data-count="16" data-stat="constructorsTitles">0</div><div class="lab">Constructors'<br>titles</div></div>
+      <div class="cell gold"><div class="num" data-count="15" data-stat="driversTitles">0</div><div class="lab">Drivers'<br>titles</div></div>
+      <div class="cell"><div class="num" data-count="836" data-stat="podiums">0</div><div class="lab">Podium<br>finishes</div></div>
+      <div class="cell"><div class="num" data-count="76" data-stat="seasons">0</div><div class="lab">Seasons · the only<br>ever-present team</div></div>
     </div>
   </div>
 </section>
@@ -887,8 +887,8 @@
   <div class="wrap">
     <p><span class="sf">SF</span> &nbsp; <strong class="site-name">The Long Wait</strong> · a data story about Scuderia Ferrari.</p>
     <p>
-      Headline figures are drawn from the complete Formula 1 record (1950–<span class="record-year">2024</span>): <strong id="totalWins">249</strong> Grand
-      Prix wins, <strong id="totalPodiums">841</strong> podiums, <strong id="totalSeasons">75</strong> seasons entered, and <strong id="totalConstructors">16</strong>
+      Headline figures are drawn from the complete Formula 1 record (1950–<span class="record-year">2025</span>): <strong id="totalWins">248</strong> Grand
+      Prix wins, <strong id="totalPodiums">836</strong> podiums, <strong id="totalSeasons">76</strong> seasons entered, and <strong id="totalConstructors">16</strong>
       constructors' / <strong id="totalDrivers">15</strong> drivers' championships. The drought is anchored to Ferrari's last
       <strong>confirmed</strong> titles: the Drivers' Championship of 2007 (Kimi Räikkönen, by one point)
       and the Constructors' Championship of 2008. The "years and counting" figure is computed live from
@@ -896,7 +896,7 @@
       Drivers' Championship and the 2008 Constructors' Championship.</span>
     </p>
     <p class="src">
-      Historical data: Ergast Developer API / Jolpica-F1 community database (race results 1950–<span class="record-year">2024</span>).
+      Historical data: Ergast Developer API / Jolpica-F1 community database (race results 1950–<span class="record-year">2025</span>).
       Win, podium and points totals computed directly from race-result records; championship years from the
       established F1 record. Ferrari, the Prancing Horse, the Scuderia Ferrari shield and the "SF"
       monogram are registered trademarks of Ferrari S.p.A., used here for editorial and non-commercial
@@ -1077,11 +1077,12 @@
   /* ---------- wins chart (centerpiece) ---------- */
   var CHART_FALLBACK = {
     startYear: 1950,
-    // Ferrari wins per season from 1950; computed from Ergast/Jolpica race results.
-    wins: [0,3,7,7,2,1,6,0,2,2,1,5,0,1,3,0,2,0,1,0,4,2,1,0,3,6,6,4,5,6,0,2,3,4,1,2,0,2,1,3,6,0,0,0,1,1,3,5,6,6,10,9,15,8,15,1,9,9,8,1,5,1,3,2,0,3,0,5,6,3,0,0,4,1,5],
+    // Ferrari wins per season 1950-2025, from Jolpica race results (mirrors the
+    // committed data file, so the offline fallback matches the live values).
+    wins: [0,3,7,7,2,1,5,0,2,2,1,5,0,1,3,0,2,0,1,0,4,2,1,0,3,6,6,4,5,6,0,2,3,4,1,2,0,2,1,3,6,0,0,0,1,1,3,5,6,6,10,9,15,8,15,1,9,9,8,1,5,1,3,2,0,3,0,5,6,3,0,0,4,1,5,0],
     driversTitleYears: [1952,1953,1956,1958,1961,1964,1975,1977,1979,2000,2001,2002,2003,2004,2007],
     constructorsTitleYears: [1961,1964,1975,1976,1977,1979,1982,1983,1999,2000,2001,2002,2003,2004,2007,2008],
-    totals: { wins: 249, podiums: 841, seasons: 75, constructorsTitles: 16, driversTitles: 15 }
+    totals: { wins: 248, podiums: 836, seasons: 76, constructorsTitles: 16, driversTitles: 15 }
   };
   var CHARTDATA = CHART_FALLBACK;
 
@@ -1210,7 +1211,7 @@
   /* Baked-in defaults are the last confirmed titles; a successful fetch of the
      cron-refreshed data file overrides them. Any failure keeps these values, so
      the page never breaks on a network/API problem. */
-  var TITLES = { driversYear: 2007, constructorsYear: 2008, verifiedThrough: 2024, recordThrough: 2024, droughtBroken: false };
+  var TITLES = { driversYear: 2007, constructorsYear: 2008, verifiedThrough: 2025, recordThrough: 2025, droughtBroken: false };
 
   function renderDrought() {
     var num = document.getElementById("droughtNum");
@@ -1243,6 +1244,17 @@
       var e = document.getElementById(id);
       if (e && map[id] != null) e.textContent = map[id];
     }
+    // Stat counters + inline prose figures share data-stat keys with the totals.
+    document.querySelectorAll("[data-stat]").forEach(function (el) {
+      var v = t[el.dataset.stat];
+      if (v == null) return;
+      if (el.dataset.count != null) {
+        el.dataset.count = v;                       // animates to the live value
+        if (el.dataset.done) el.textContent = v;    // already ran: correct it
+      } else {
+        el.textContent = v;
+      }
+    });
   }
 
   function renderVerifyLine() {
