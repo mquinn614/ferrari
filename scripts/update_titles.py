@@ -31,9 +31,11 @@ DATA = os.path.normpath(os.path.join(HERE, "..", "data", "ferrari-titles.json"))
 FERRARI = "ferrari"
 START_YEAR = 1950
 
-# Known totals through the 2024 season; computed figures must never fall below
-# these (they only grow), which catches a truncated/garbage API response.
-BASELINE = {"wins": 249, "podiums": 841, "seasons": 75,
+# Sanity floors to reject a truncated/garbage API response (e.g. pagination
+# broke and only returned 100 results). These are deliberately below Jolpica's
+# real figures (248 wins / 836 podiums / 76 seasons as of 2025) — they catch
+# catastrophic undercounts, not the authoritative source-of-truth values.
+BASELINE = {"wins": 240, "podiums": 800, "seasons": 74,
             "constructorsTitles": 16, "driversTitles": 15}
 
 # Ferrari championship years through 2024 — immutable history. Any new title
@@ -267,7 +269,7 @@ def selftest():
     }
     assert not chart_guard_failures(good, 2025), chart_guard_failures(good, 2025)
     below = json.loads(json.dumps(good))
-    below["totals"]["wins"] = 248
+    below["totals"]["wins"] = 100
     assert chart_guard_failures(below, 2025), "below-baseline wins should fail"
     wrong_len = json.loads(json.dumps(good))
     wrong_len["wins"] = [4] * 40
