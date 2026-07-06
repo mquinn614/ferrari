@@ -5,7 +5,7 @@
   "recordThrough": 2025,
   "droughtBroken": false,
   "source": "https://api.jolpi.ca/ergast/f1/",
-  "updated": "2026-06-29",
+  "updated": "2026-07-06",
   "chart": {
     "startYear": 1950,
     "wins": [
